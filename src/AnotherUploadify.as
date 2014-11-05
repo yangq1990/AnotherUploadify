@@ -19,7 +19,7 @@ package
 	
 	/**
 	 * 类似于JQuery插件uploadify
-	 * KuaijiUploadify通过flash上传，js更新显示状态，包括ftp, http 
+	 * AnotherUploadify通过flash上传，js更新显示状态，包括ftp, http 
 	 * @author yatsen_yang
 	 * 
 	 */	
@@ -146,7 +146,7 @@ package
 		 */		
 		private function load2MemoryProgressHandler(evt:ModuleEvt):void
 		{
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'to memory progress:' + evt.data.fileRef.name + "-->" + evt.data.progress));			
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'to memory progress:' + evt.data.fileRef.name + "-->" + evt.data.progress));			
 			_externalAPI.load2MemoryProgress(JSON.stringify({index:_currrentIndex + 1, progress: evt.data.progress}));
 		}
 		
@@ -157,7 +157,7 @@ package
 		 */		
 		private function upload2ServerProgressHandler(evt:ModuleEvt):void
 		{		
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'upload progress:' + evt.data.fileRef.name + '-->' + evt.data.progress));			
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'upload progress:' + evt.data.fileRef.name + '-->' + evt.data.progress));			
 			_externalAPI.uploadProgress(JSON.stringify({index:_currrentIndex + 1, progress: evt.data.progress}));			
 		}
 		
@@ -168,7 +168,7 @@ package
 		 */		
 		private function upload2ServerCompleteHandler(evt:ModuleEvt):void
 		{
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'complete:' + evt.data.name + '--->' +  _currrentIndex));			
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'complete:' + evt.data.name + '--->' +  _currrentIndex));			
 			_externalAPI.uploadComplete(JSON.stringify({index:_currrentIndex+1}));			
 			
 			_successCount += 1;			
@@ -208,7 +208,7 @@ package
 		/** 全部上传完成 **/
 		private function allComplete():void
 		{
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'all complete'));
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'all complete'));
 			_btn.mouseEnabled = true;
 			_btn.alpha = 1;
 			_currrentIndex = -1;
@@ -224,7 +224,7 @@ package
 			var i:int = getfileRefIndex(evt.data);
 			_selectedFiles[i].isCanceled = true;
 			uploadNext(i);
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'ioerror:' + evt.data.name));
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'ioerror:' + evt.data.name));
 			
 			_externalAPI.uploadIOError(JSON.stringify({index:i+1}));			
 		}
@@ -239,7 +239,7 @@ package
 			var i:int = getfileRefIndex(evt.data);
 			_selectedFiles[i].isCanceled = true;
 			uploadNext(i);
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'securityerror:' + evt.data.name));
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'securityerror:' + evt.data.name));
 			
 			_externalAPI.uploadSecurityError(JSON.stringify({index:i + 1}));	
 		}
@@ -251,7 +251,7 @@ package
 		 */		
 		private function deleteItemOKHandler(evt:ModuleEvt):void
 		{
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'deleteItemOK:' + evt.data.name));
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'deleteItemOK:' + evt.data.name));
 			var i:int = getfileRefIndex(evt.data);
 			_externalAPI.deleteItemOK(JSON.stringify({index:i + 1}));
 			uploadNext(i);
@@ -309,7 +309,7 @@ package
 		private function externalDeleteItemHandler(evt:ExternalEvt):void
 		{
 			var index:int = evt.index - 1;
-			_m.isDeveloperMode && (Logger.info('KuaijiUploadify', 'js want to delete: ' + index)); 
+			_m.isDeveloperMode && (Logger.info('AnotherUploadify', 'js want to delete: ' + index)); 
 			_selectedFiles[index].isCanceled = true;
 			if(_selectedFiles[index].isUploading)
 			{
