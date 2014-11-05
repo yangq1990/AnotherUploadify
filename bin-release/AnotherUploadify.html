@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> 
+    <!-- 
+    Smart developers always View Source. 
+    
+    This application was built using Adobe Flex, an open source framework
+    for building rich Internet applications that get delivered via the
+    Flash Player or to desktops via Adobe AIR. 
+    
+    Learn more about Flex at http://flex.org 
+    // -->
+    <head>
+        <title></title>
+        <meta name="google" value="notranslate" />         
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 
+             the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as 
+             the percentage of the height of its parent container, which has to be set explicitly.  Fix for
+             Firefox 3.6 focus border issues.  Initially, don't display flashContent div so it won't show 
+             if JavaScript disabled.
+        -->
+        <style type="text/css" media="screen"> 
+            html, body  { height:100%; }
+            body { margin:0; padding:0; overflow:auto; text-align:center; 
+                   background-color: #ffffff; }   
+            object:focus { outline:none; }
+            #flashContent { display:none; }
+        </style>
+       <style>
+	   		*{padding:0;margin:0;}
+			.iItemList,.iItemName,.iItemSize,.iItemSuccess,.iItemFail,.iItemloading{font-style:normal;margin-right:15px;}
+			.iItemSuccess{display:none;}
+			.iItemFail{display:none;}
+			li{list-style:none;}
+			.progress{height:3px;width:100%;background:#ccc;}
+			.speed{height:3px;width:0;background:#19a97b;}
+			.topToop{position:relative;font-size:14px;line-height:24px;padding:3px 10px;}
+			.deleteNode{display:inline-block;*zoom:1;width:16px;height:16px;position:absolute;top:7px;right:10px;background:url('cancel.png') no-repeat;cursor:pointer;}
+</style>
+        
+        
+        <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
+        <!-- BEGIN Browser History required section -->
+        <link rel="stylesheet" type="text/css" href="history/history.css" />
+        <script type="text/javascript" src="history/history.js"></script>
+        <!-- END Browser History required section -->  
+            
+        <script type="text/javascript" src="swfobject.js"></script>
+        
+        <script>
+        function thisMovie(movieName) 
+		{
+    		 if (navigator.appName.indexOf("Mi0crosoft") != -1) 
+    		 {
+         		return window[movieName];
+     		 }
+     		 else 
+     		 {
+         		return document[movieName];
+     		}
+ 		}
+ 		
+ 		function deleteItem(index)
+ 		{
+			var liWrap = dom("li_"+index);
+            if(liWrap.getAttribute('rel'))
+            {
+                return false;
+            }
+            else
+            {
+                liWrap.setAttribute('rel','1');
+                thisMovie("AnotherUploadify").fl_delete(index);
+            }
+ 		}
+ 		
+
+		function createElement(tag)
+		{
+			return document.createElement(tag);
+		}
+
+		function ISObject(data)
+		{
+			return Object.prototype.toString.call(data) =='[object Object]';
+		}
+
+		function stringToJSON(data)
+		{
+			if(!ISObject(data)){
+				data = eval('('+data+')');
+			}
+			return data;
+		}
+
+		function dom(id)
+		{
+			return document.getElementById(id);
+		}
+
+		function isIE()
+		{
+			var ua=navigator.userAgent.toLowerCase();
+			var ie=/msie/;
+			return ie.test(ua);
+		}
+
+		function setOpacity(id)
+		{
+			var opacity=100;
+			var el = dom('li_'+id);
+			function fn(){
+				opa = (function(){
+					return opacity = opacity-10
+				})();
+
+				if(opa<0)
+				{
+					dom('wrapper').removeChild(el);
+					clearInterval(flag);
+					return ;
+				}
+				
+				if(isIE)
+				{
+					el.style.filter="alpha(opacity="+opa+")";
+				}
+				else
+				{
+					el.style.opacity=(opacity/100);
+				}
+			}
+			var flag = setInterval(fn,50);
+		}
+
+		function js_select(data)
+		{						
+			var elem,fragment,li,ul,wrapper;
+			if(wrapper=dom('wrapper'))
+			{
+				wrapper.parentNode.removeChild(wrapper);
+			}
+			data = stringToJSON(data);
+			elem=document.body;
+			fragment = document.createDocumentFragment('ul');
+			ul=createElement('ul');
+			ul.id='wrapper';
+			if(Object.prototype.toString.call(data)=='[object Array]')
+			{				
+				for(var i=0;i<data.length;i++)
+				{
+					if(Object.prototype.toString.call(data[i])=='[object Object]')
+					{
+						li=createElement('li');
+						li.id="li_"+data[i].index;
+						li.innerHTML='<div class="topToop"><b class="iItemList">'+data[i].index+'</b><i class="iItemName">'+data[i].name+'</i><i class="iItemSize">'+data[i].size+'</i>&nbsp;&nbsp;-&nbsp;&nbsp;<i class="iItemloading" id="memoryProgress_'+data[i].index+'">(0)</i><i class="deleteNode" id="'+data[i].index+'" onclick="deleteItem(this.id)"></i></div><div id="progress_'+data[i].index+'" class="progress"><div id=speed_'+data[i].index+' class="speed"></div></div>';
+						fragment.appendChild(li);
+					}
+					else
+					{
+						continue;
+					}
+				}
+			}
+			else
+			{
+				return ;
+			}
+			ul.appendChild(fragment);
+			elem.appendChild(ul);		
+		}
+
+
+		function js_upload2ServerProgress(data)
+		{
+			data = stringToJSON(data);
+			var speed = dom('speed_'+data.index);
+			speed.style.width=(data.progress)+'%';
+			dom('memoryProgress_'+data.index).innerHTML='('+data.progress+'%)';
+		}	
+
+		function js_upload2ServerComplete(data)
+		{
+			data = stringToJSON(data);
+			setOpacity(data.index)
+		}
+		
+		function js_uploadIOError(data)
+		{
+			data = stringToJSON(data);
+
+			var errorStatus = dom('statusError_'+data.index);
+			errorStatus.style.display="inline-block";
+		}
+
+		function js_load2MemoryProgress(data)
+		{
+			data = stringToJSON(data);
+			dom('memoryProgress_'+data.index).innerHTML='(加载中...'+data.progress+'%)';
+		}
+		
+		function js_deleteItemOK(data)
+		{
+			data = stringToJSON(data);
+			setOpacity(data.index);
+		}
+		
+        </script>
+        <script type="text/javascript">
+            // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
+            var swfVersionStr = "11.1.0";
+            // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
+            var xiSwfUrlStr = "playerProductInstall.swf";
+            
+            var flashvars = {};
+            
+            flashvars.selectBtnImgUrl = "http://www.xinguoedu.com/test/selectBtn.png";
+             flashvars.protocol = "ftp";
+            //flashvars.protocol = "http";
+            //flashvars.url = "";
+            flashvars.developermode = "true";
+            flashvars.host = "192.168.1.193";
+            flashvars.port = "21";
+            flashvars.user = "webftp";
+            flashvars.pass = "webftp";
+            flashvars.description = "jpg格式图片或者mp3文件";
+            flashvars.extension = "*.jpg;*.mp3";
+            flashvars.chunkSize = "65536"; //每次socket发送的字节数组的大小，单位为Byte,相当于64KB
+            flashvars.interval = "100" ; //发送数据的时间间隔，单位毫秒
+            flashvars.field = "Filedata";
+            
+            
+            var params = {};
+            params.quality = "high";
+            params.bgcolor = "#ffffff";
+            params.allowscriptaccess = "sameDomain";
+            params.allowfullscreen = "true";
+            var attributes = {};
+            attributes.id = "AnotherUploadify";
+            attributes.name = "AnotherUploadify";
+            attributes.align = "middle";
+            swfobject.embedSWF(
+                "AnotherUploadify.swf", "flashContent", 
+                "140", "40", 
+                swfVersionStr, xiSwfUrlStr, 
+                flashvars, params, attributes);
+            // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+            swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+        </script>
+    </head>
+    <body>
+        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
+             JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
+             when JavaScript is disabled.
+        -->
+        <div id="flashContent">
+            <p>
+                To view this page ensure that Adobe Flash Player version 
+                11.1.0 or greater is installed. 
+            </p>
+            <script type="text/javascript"> 
+                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+            </script> 
+        </div>
+        
+        <noscript>
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="AnotherUploadify">
+                <param name="movie" value="AnotherUploadify.swf" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#ffffff" />
+                <param name="allowScriptAccess" value="sameDomain" />
+                <param name="allowFullScreen" value="true" />
+                <!--[if !IE]>-->
+                <object type="application/x-shockwave-flash" data="AnotherUploadify.swf" width="100%" height="100%">
+                    <param name="quality" value="high" />
+                    <param name="bgcolor" value="#ffffff" />
+                    <param name="allowScriptAccess" value="sameDomain" />
+                    <param name="allowFullScreen" value="true" />
+                <!--<![endif]-->
+                <!--[if gte IE 6]>-->
+                    <p> 
+                        Either scripts and active content are not permitted to run or Adobe Flash Player version
+                        11.1.0 or greater is not installed.
+                    </p>
+                <!--<![endif]-->
+                    <a href="http://www.adobe.com/go/getflashplayer">
+                        <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+                    </a>
+                <!--[if !IE]>-->
+                </object>
+                <!--<![endif]-->
+            </object>
+        </noscript>     
+   </body>
+</html>
