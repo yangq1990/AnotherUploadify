@@ -1,0 +1,44 @@
+#js公开给flash调用的接口#
+
+js_select(data);                # 已选择文件
+data是一个数组转换成的json string，数据结构如下
+[
+	{index: , name:"", size: },
+	{index: , name:"", size: }
+]
+
+js_load2MemoryProgress(data);   # 文件加载到内存中的进度，只在ftp上传时被调用
+data是一个Object转换成的jsonstring,数据结构如下
+{index: , progress: }
+
+js_upload2ServerProgress(data); # 文件上传到Server的进度
+data是一个Object转换成的jsonstring,数据结构如下
+{index: , progress: }
+
+js_upload2ServerComplete(data); # 文件上传到Server complete
+data是一个Object转换成的jsonstring,数据结构如下
+{index: }
+
+js_uploadIOError(data);         # 上传文件io错误
+data是一个Object转换成的jsonstring,数据结构如下
+{index: }
+
+js_uploadSecurityError(data);   # 上传文件安全沙箱错误
+data是一个Object转换成的jsonstring,数据结构如下
+{index: }
+
+js_deleteItemOK(data);          # 成功删除文件
+data是一个Object转换成的jsonstring,数据结构如下
+{index: }
+
+js_uploadMemoryError();     # 上传文件内存错误（比如内存不够分配），提醒用户关掉一些软件，释放内存
+
+js_illegalOperation();    # 非法操作，提醒用户一次只能打开一个文件浏览会话
+
+js_mainSocketClose();     #ftp上传时与ftpserver的连接中断
+
+----------------------------------------------------------------------------
+
+#flash公开给js调用的接口
+fl_delete(index);                # 删除正在上传的文件  index,文件id
+
