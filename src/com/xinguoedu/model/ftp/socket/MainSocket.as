@@ -84,7 +84,7 @@ package com.xinguoedu.model.ftp.socket
 				dispatchEvent(new MainSocketEvt(MainSocketEvt.CLOSE));
 				return;
 			}
-			_socket.writeMultiByte(comm.toExecuteString(), "utf8");
+			_socket.writeMultiByte(comm.toExecuteString(), "utf-8");
 			_socket.flush();
 		}
 		
